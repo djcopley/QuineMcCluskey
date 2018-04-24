@@ -1,2 +1,2 @@
 # QuineMcCluskey
-A digital logic simplification program.
+A digital logic simplification program. A work in progress...
