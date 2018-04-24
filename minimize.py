@@ -7,7 +7,6 @@ import logging
 __author__ = 'Daniel Copley'
 __version__ = 'v0.1-beta'
 
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -19,33 +18,37 @@ console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 
 
-class Term:
+class Term:  # TODO Complete term class
     """General term class"""
+    pass
 
-    def __init__(self, value):
-        """
-        :param value: either int or tuple
-        """
-        self.value = value
-        self.covered = False
 
-        if isinstance(value, int):
-            self.binary = format(value, 'b')
-        elif isinstance(value, list):
-            for i in value:
-                self.binary = self._get_binary(i)
+# TODO find_prime_implicants() function
+def find_print_implicants():
+    """
 
-    def __str__(self):
-        return '{}'.format(self.value, self.covered)
+    :return:
+    """
+    pass
 
-    def __repr__(self):
-        return str(self)
 
-    def __xor__(self, other):
-        if isinstance(other, Term):
-            return other.value ^ self.value
-        else:
-            return other ^ self.value
+# TODO find_essential_prime_implicants() function
+def find_essential_prim_implicants():
+    """
 
-    def _get_binary(self, term):
-        return term
+    :return:
+    """
+    pass
+
+
+# TODO find_solutions() function
+def find_solutions():
+    """
+
+    :return:
+    """
+    pass
+
+
+if __name__ == '__main__':
+    pass
