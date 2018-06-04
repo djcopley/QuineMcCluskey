@@ -1,6 +1,5 @@
 import unittest
 import minimize
-from unittest.mock import patch
 
 
 class TestMinimization(unittest.TestCase):

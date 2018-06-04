@@ -1,2 +1,2 @@
-# QuineMcCluskey
+# QuineMcCluskey [![Build Status](https://travis-ci.org/djcopley/QuineMcCluskey.svg?branch=master)](https://travis-ci.org/djcopley/QuineMcCluskey)
 A digital logic simplification program. A work in progress...
