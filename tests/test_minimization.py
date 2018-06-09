@@ -8,6 +8,3 @@ class TestMinimization(unittest.TestCase):
 
     def tearDown(self):
         pass
-
-    def test_find_prime_implicant(self):
-        pass

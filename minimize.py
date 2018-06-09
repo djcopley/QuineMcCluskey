@@ -2,53 +2,56 @@
 Quine McCluskey digital logic simplification
 """
 import itertools
-import logging
 
 __author__ = 'Daniel Copley'
 __version__ = 'v0.1-beta'
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
-console_handler = logging.StreamHandler()
-console_handler.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-console_handler.setFormatter(formatter)
-
-logger.addHandler(console_handler)
-
-
-class Term:  # TODO Complete term class
-    """General term class"""
-    pass
-
-
-# TODO find_prime_implicants() function
-def find_print_implicants():
+def differ_by_one(nums):
     """
-
-    :return:
+    :param nums: tuple of binary strings
+    :return: true if it differs by only one bit, else false
     """
-    pass
+    num1, num2 = nums
+    difference = 0
+    for index, bit in enumerate(num1):
+        if bit != num2[index]:
+            difference += 1
+        if difference > 1:
+            return False
+    return True
 
 
-# TODO find_essential_prime_implicants() function
-def find_essential_prim_implicants():
+def minimize(n_bits, minterms, xterms):
     """
-
-    :return:
+    :param minterms: list of integer minterms
+    :param xterms: list of integer don't care terms
+    :return: list of essential prime implicants (as binary strings)
     """
-    pass
+    # Error checking
+    if max(minterms) > 2 ** n_bits or max(xterms) > 2 ** n_bits:
+        raise ValueError("integer overflow")
 
+    # Minimizing
+    minterms = [format(i, '0{}b'.format(n_bits)) for i in minterms]
+    xterms = [format(i, '0{}b'.format(n_bits)) for i in xterms]
+    terms = set(minterms + xterms)
 
-# TODO find_solutions() function
-def find_solutions():
-    """
+    pairs = []
 
-    :return:
-    """
-    pass
+    for pair in itertools.combinations(terms, 2):
+        pairs.append(pair)
+
+    print(list(filter(differ_by_one, pairs)))
 
 
 if __name__ == '__main__':
-    pass
+    # n_bits = int(input("Enter number of terms: "))
+    # minterms = list(map(int, input("Enter minterms: ").split()))
+    # xterms = list(map(int, input("Enter don't care terms: ").split()))
+
+    n_bits = 4
+    minterms = [0, 3, 5, 7]
+    xterms = [2, 8]
+
+    minimize(n_bits, minterms, xterms)
