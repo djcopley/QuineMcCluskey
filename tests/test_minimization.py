@@ -3,8 +3,14 @@ import minimize
 
 
 class TestMinimization(unittest.TestCase):
-    def setUp(self):
+    def test_differ_by_one(self):
         pass
 
-    def tearDown(self):
+    def test_reduce_bits(self):
+        pass
+
+    def test_get_pairs(self):
+        pass
+
+    def test_minimize(self):
         pass
