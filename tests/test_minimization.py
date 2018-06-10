@@ -3,6 +3,9 @@ import minimize
 
 
 class TestMinimization(unittest.TestCase):
+    def test_term(self):
+        pass
+
     def test_differ_by_one(self):
         pass
 
