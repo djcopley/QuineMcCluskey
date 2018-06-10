@@ -4,10 +4,10 @@ Quine McCluskey digital logic simplification
 import itertools
 
 __author__ = 'Daniel Copley'
-__version__ = 'DEVELOPMENT'
+__version__ = 'v0.1-beta'
 
 
-class Term():
+class Term:
     """
     Term object
     """
@@ -16,7 +16,14 @@ class Term():
         self.covered = False
 
     def __eq__(self, other):
-        return True if self.bin_str == other.bin_str else False
+        if isinstance(other, Term):
+            return True if self.bin_str == other.bin_str else False
+        elif isinstance(other, str):
+            return True if self.bin_str == other else False
+        return False
+
+    def __len__(self):
+        return len(self.bin_str)
 
     def __hash__(self):
         return hash(self.bin_str)
@@ -74,6 +81,37 @@ def get_pairs(terms):
     return itertools.combinations(terms, 2)
 
 
+def reduce_pairs(pairs):
+    """
+    :param pairs: iterable of tuples
+    :return: set of reduced Term objects
+    """
+    return set(map(reduce_bits, filter(differ_by_one, pairs)))
+
+
+def format_minimized_expression(prime_implicants):
+    """
+    :param prime_implicants:
+    :return:
+    """
+    if not prime_implicants:  # If no prime implicants, return 0
+        return '0'
+    elif prime_implicants[0] == '-' * len(prime_implicants[0]):  # If all dashes, return 1
+        return '1'
+
+    result = ''
+    for iteration, prime_implicant in enumerate(prime_implicants):
+        for index, letter in enumerate(prime_implicant):
+            if letter == '1':
+                result += chr(ord('A') + index)
+            elif letter == '0':
+                result += chr(ord('A') + index) + "'"
+        if iteration != (len(prime_implicants) - 1):  # Check to see if last prime_implicant
+            result += ' + '
+
+    return result
+
+
 def minimize(n_bits, minterms, xterms):
     """
     :param n_bits: number of bits in equation
@@ -82,7 +120,7 @@ def minimize(n_bits, minterms, xterms):
     :return: list of essential prime implicants (as binary strings)
     """
     # Error checking
-    if max(minterms) > 2 ** n_bits or max(xterms) > 2 ** n_bits:
+    if max(minterms) > 2 ** n_bits or max(xterms, default=0) > 2 ** n_bits:
         raise ValueError("integer overflow")
 
     # Minimizing
@@ -97,18 +135,31 @@ def minimize(n_bits, minterms, xterms):
     # 4. Repeat until there are no more simplifications
     # 5. Find fully minimized equation using Petrick's method
 
+    reduced_pairs = []
     pairs = get_pairs(terms)
-    foo = list(filter(differ_by_one, pairs))
-    bar = map(reduce_bits, foo)
+    reduced_pairs.append(reduce_pairs(pairs))
+
+    while reduced_pairs[-1]:
+        pairs = get_pairs(reduced_pairs[-1])
+        reduced_pairs.append(reduce_pairs(pairs))
+
+    reduced_pairs = reduced_pairs[:-1]
+
+    prime_implicants = []
+
+    for item in reduced_pairs:
+        for term in item:
+            if not term.covered:
+                prime_implicants.append(term)
+
+    # TODO: Implement Petrick's method to find full simplified equation
+
+    return prime_implicants
 
 
 if __name__ == '__main__':
-    # n_bits = int(input("Enter number of terms: "))
-    # minterms = list(map(int, input("Enter minterms: ").split()))
-    # xterms = list(map(int, input("Enter don't care terms: ").split()))
+    variables = int(input("Enter number of terms: "))
+    mt = list(map(int, input("Enter minterms: ").split()))
+    dc = list(map(int, input("Enter don't care terms: ").split()))
 
-    n_bits = 4
-    minterms = [0, 3, 7, 5]
-    xterms = [2, 8]
-
-    minimize(n_bits, minterms, xterms)
+    print(format_minimized_expression(minimize(variables, mt, dc)))
