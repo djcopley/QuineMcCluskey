@@ -91,8 +91,8 @@ def reduce_pairs(pairs):
 
 def format_minimized_expression(prime_implicants):
     """
-    :param prime_implicants:
-    :return:
+    :param prime_implicants: list of Term objects
+    :return: str formatted logic expression
     """
     if not prime_implicants:  # If no prime implicants, return 0
         return '0'
@@ -162,4 +162,8 @@ if __name__ == '__main__':
     mt = list(map(int, input("Enter minterms: ").split()))
     dc = list(map(int, input("Enter don't care terms: ").split()))
 
-    print(format_minimized_expression(minimize(variables, mt, dc)))
+    minimized = minimize(variables, mt, dc)
+    formatted_minimized = format_minimized_expression(minimized)
+
+    print('\nPrime Implicants: {}'.format(minimized))
+    print('Minimized Expression: {}'.format(formatted_minimized))
