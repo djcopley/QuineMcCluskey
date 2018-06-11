@@ -135,7 +135,7 @@ def minimize(n_bits, minterms, xterms):
     # 4. Repeat until there are no more simplifications
     # 5. Find fully minimized equation using Petrick's method
 
-    reduced_pairs = []
+    reduced_pairs = [terms]
     pairs = get_pairs(terms)
     reduced_pairs.append(reduce_pairs(pairs))
 
