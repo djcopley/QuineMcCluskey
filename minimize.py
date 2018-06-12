@@ -41,9 +41,6 @@ class Term:
     def __getitem__(self, index):
         return self.bin_str[index]
 
-    def __setitem__(self, index, value):
-        self.bin_str[index] = value
-
 
 def differ_by_one(nums):
     """
@@ -120,7 +117,7 @@ def minimize(n_bits, minterms, xterms):
     :return: list of essential prime implicants (as binary strings)
     """
     # Error checking
-    if max(minterms) > 2 ** n_bits or max(xterms, default=0) > 2 ** n_bits:
+    if max(minterms, default=0) > 2 ** n_bits or max(xterms, default=0) > 2 ** n_bits:
         raise ValueError("integer overflow")
 
     # Minimizing
@@ -149,7 +146,7 @@ def minimize(n_bits, minterms, xterms):
 
     for item in reduced_pairs:
         for term in item:
-            if not term.covered:
+            if not term.covered and term not in xterms:
                 prime_implicants.append(term)
 
     # TODO: Implement Petrick's method to find full simplified equation
