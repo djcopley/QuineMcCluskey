@@ -52,10 +52,11 @@ def differ_by_one(nums):
     for index, bit in enumerate(num1):
         if bit != num2[index]:
             difference += 1
+        if difference > 1:
+            return False
     if difference == 1:
         num1.covered, num2.covered = True, True
         return True
-    return False
 
 
 def reduce_bits(nums):
