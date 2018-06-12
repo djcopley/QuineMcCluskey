@@ -6,4 +6,3 @@ Run the minimize.py file and follow the prompts (don't care terms are optional).
 
 ### To Do
 * Implement Petrick's method to simplify logic to its most simple form.
-* Add unit tests
