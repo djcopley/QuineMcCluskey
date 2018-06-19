@@ -4,7 +4,7 @@ Quine McCluskey digital logic simplification
 import itertools
 
 __author__ = 'Daniel Copley'
-__version__ = 'v0.2-beta'
+__version__ = 'v0.3-beta'
 
 
 class Term:
