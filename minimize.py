@@ -6,7 +6,6 @@ import itertools
 __author__ = 'Daniel Copley'
 __version__ = 'v0.4-beta'
 
-
 class Term:
     """
     Term object
