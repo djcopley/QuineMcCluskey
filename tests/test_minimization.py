@@ -1,6 +1,6 @@
 import unittest
 import itertools
-from minimize import Term, differ_by_one, reduce_bits, get_pairs, format_minimized_expression, minimize
+from minimize import *
 
 
 class TestMinimization(unittest.TestCase):
