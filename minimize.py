@@ -11,6 +11,7 @@ class Term:
     """
     Term object
     """
+
     def __init__(self, bin_str):
         self.bin_str = bin_str
         self.covered = False
@@ -40,6 +41,27 @@ class Term:
 
     def __getitem__(self, index):
         return self.bin_str[index]
+
+    def get_covered_terms(self):
+        """
+        Method calculates terms covered by Term object
+        :return: generator object of covered terms
+        """
+        base = 0
+        xindex = [index for index, item in enumerate(self.bin_str[::-1]) if item == '-']
+
+        for index, item in enumerate(self.bin_str[::-1]):
+            if item == '1':
+                base += 2 ** index
+
+        yield base
+
+        for i in range(len(xindex)):
+            for items in itertools.combinations(xindex, i + 1):
+                accumulator = 0
+                for index in items:
+                    accumulator += 2 ** index
+                yield base + accumulator
 
 
 def differ_by_one(nums):
