@@ -194,11 +194,11 @@ def minimize(n_bits, m_terms, x_terms):
         return len([i for i in l1 if i in l2]) > 0
 
     for prime_implicant in prime_implicants:
-        tmp = list(prime_implicant.get_covered_terms())
-        for covered_terms in tmp:
+        current_term = list(prime_implicant.get_covered_terms())
+        for covered_terms in current_term:
             if covered_terms in essential_terms:
                 result.append(prime_implicant)
-                m_terms = [i for i in m_terms if i not in tmp]
+                m_terms = [i for i in m_terms if i not in current_term]
                 break
 
     while len(m_terms) > 0:
