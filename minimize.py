@@ -189,7 +189,6 @@ def minimize(n_bits, m_terms, x_terms):
     result = []
     essential_terms = terms_covered_once(prime_implicants, m_terms)
 
-    print(m_terms)
 
     def intersect(l1, l2):
         return len([i for i in l1 if i in l2]) > 0
@@ -200,7 +199,6 @@ def minimize(n_bits, m_terms, x_terms):
             if covered_terms in essential_terms:
                 result.append(prime_implicant)
                 m_terms = [i for i in m_terms if i not in tmp]
-                print(m_terms)
                 break
 
     while len(m_terms) > 0:
@@ -210,8 +208,6 @@ def minimize(n_bits, m_terms, x_terms):
                 result.append(prime_implicant)
                 m_terms = [i for i in m_terms if i not in current_term]
                 break
-
-    print(m_terms)
 
     return result
 
