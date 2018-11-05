@@ -9,7 +9,7 @@ __version__ = 'v0.4-beta'
 
 class Term:
     """
-    Term object
+    Term class is used to keep track of implicants
     """
 
     def __init__(self, bin_str):
@@ -48,7 +48,7 @@ class Term:
         :return: generator object of covered terms
         """
         base = 0
-        xindex = [index for index, item in enumerate(self.bin_str[::-1]) if item == '-']
+        x_index = [index for index, item in enumerate(self.bin_str[::-1]) if item == '-']
 
         for index, item in enumerate(self.bin_str[::-1]):
             if item == '1':
@@ -56,14 +56,15 @@ class Term:
 
         yield base
 
-        for i in range(len(xindex)):
-            for items in itertools.combinations(xindex, i + 1):
+        for i in range(len(x_index)):
+            for items in itertools.combinations(x_index, i + 1):
                 accumulator = 0
                 for index in items:
                     accumulator += 2 ** index
                 yield base + accumulator
 
 
+# class Minimize:
 def differ_by_one(nums):
     """
     :param nums: tuple of binary strings
@@ -132,23 +133,36 @@ def format_minimized_expression(prime_implicants):
     return result
 
 
-def minimize(n_bits, minterms, xterms):
+def terms_covered_once(prime_implicants, m_terms):
+    """
+    :param prime_implicants:
+    :param m_terms:
+    :return:
+    """
+    covered = []
+    for prime_implicant in prime_implicants:
+        for covered_term in prime_implicant.get_covered_terms():
+            covered.append(covered_term)
+    return [i for i in covered if covered.count(i) == 1 and i in m_terms]
+
+
+def minimize(n_bits, m_terms, x_terms):
     """
     :param n_bits: number of bits in equation
-    :param minterms: list of integer minterms
-    :param xterms: list of integer don't care terms
+    :param m_terms: list of integer minterms
+    :param x_terms: list of integer don't care terms
     :return: list of essential prime implicants (as binary strings)
     """
     # Error checking
-    if max(minterms, default=0) > 2 ** n_bits or max(xterms, default=0) > 2 ** n_bits:
+    if max(m_terms, default=0) > 2 ** n_bits or max(x_terms, default=0) > 2 ** n_bits:
         raise ValueError("integer overflow")
 
     # Minimizing
-    minterms = [Term(format(i, '0{}b'.format(n_bits))) for i in minterms]
-    xterms = [Term(format(i, '0{}b'.format(n_bits))) for i in xterms]
-    terms = set(minterms + xterms)
+    minterms = [Term(format(i, '0{}b'.format(n_bits))) for i in m_terms]
+    dcterms = [Term(format(i, '0{}b'.format(n_bits))) for i in x_terms]
+    terms = set(minterms + dcterms)
 
-    # The structure:
+    # Step-by-step
     # 1. Get all combination pairs
     # 2. Filter out items that differ by more than one bit
     # 3. Go through each pair that differs by only one bit and create a new Term with covered bits dashed out
@@ -169,12 +183,37 @@ def minimize(n_bits, minterms, xterms):
 
     for item in reduced_pairs:
         for term in item:
-            if not term.covered and term not in xterms:
+            if not term.covered and term not in dcterms:
                 prime_implicants.append(term)
 
-    # TODO: Implement Petrick's method to find full simplified equation
+    result = []
+    essential_terms = terms_covered_once(prime_implicants, m_terms)
 
-    return prime_implicants
+    print(m_terms)
+
+    def intersect(l1, l2):
+        return len([i for i in l1 if i in l2]) > 0
+
+    for prime_implicant in prime_implicants:
+        tmp = list(prime_implicant.get_covered_terms())
+        for covered_terms in tmp:
+            if covered_terms in essential_terms:
+                result.append(prime_implicant)
+                m_terms = [i for i in m_terms if i not in tmp]
+                print(m_terms)
+                break
+
+    while len(m_terms) > 0:
+        for prime_implicant in prime_implicants:
+            current_term = list(prime_implicant.get_covered_terms())
+            if intersect(current_term, m_terms):
+                result.append(prime_implicant)
+                m_terms = [i for i in m_terms if i not in current_term]
+                break
+
+    print(m_terms)
+
+    return result
 
 
 if __name__ == '__main__':
