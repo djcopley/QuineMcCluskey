@@ -64,7 +64,6 @@ class Term:
                 yield base + accumulator
 
 
-# class Minimize:
 def differ_by_one(nums):
     """
     :param nums: tuple of binary strings
@@ -78,7 +77,7 @@ def differ_by_one(nums):
         if difference > 1:
             return False
     if difference == 1:
-        num1.covered, num2.covered = True, True
+        num1.covered = num2.covered = True
         return True
 
 
@@ -135,9 +134,9 @@ def format_minimized_expression(prime_implicants):
 
 def terms_covered_once(prime_implicants, m_terms):
     """
-    :param prime_implicants:
-    :param m_terms:
-    :return:
+    :param prime_implicants: list of prime implicants
+    :param m_terms: list of minterms (as integers, not Term objects)
+    :return: terms that are only covered once by prime implicants
     """
     covered = []
     for prime_implicant in prime_implicants:
@@ -189,9 +188,9 @@ def minimize(n_bits, m_terms, x_terms):
     result = []
     essential_terms = terms_covered_once(prime_implicants, m_terms)
 
+    # TODO Clean up code
 
-    def intersect(l1, l2):
-        return len([i for i in l1 if i in l2]) > 0
+    intersect = lambda l1, l2: len([i for i in l1 if i in l2]) > 0
 
     for prime_implicant in prime_implicants:
         current_term = list(prime_implicant.get_covered_terms())
@@ -200,6 +199,8 @@ def minimize(n_bits, m_terms, x_terms):
                 result.append(prime_implicant)
                 m_terms = [i for i in m_terms if i not in current_term]
                 break
+
+    # Doesnt always yield fully simplified expression
 
     while len(m_terms) > 0:
         for prime_implicant in prime_implicants:
