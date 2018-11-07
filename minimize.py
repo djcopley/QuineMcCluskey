@@ -145,12 +145,27 @@ def terms_covered_once(prime_implicants, m_terms):
     return [i for i in covered if covered.count(i) == 1 and i in m_terms]
 
 
+def get_term_max_coverage(prime_implicants, m_terms):
+    """
+    Function sorts prime implicants based on how many m_terms are covered
+
+    :param prime_implicants: list of prime implicants
+    :param m_terms: list of minterms (integers, not Term objects)
+    :return: remaining minterms
+    """
+
+    term_max_coverage = max(prime_implicants,
+              key=lambda prime_implicant: len([i for i in prime_implicant.get_covered_terms() if i in m_terms]))
+
+    return term_max_coverage
+
+
 def minimize(n_bits, m_terms, x_terms):
     """
     :param n_bits: number of bits in equation
     :param m_terms: list of integer minterms
     :param x_terms: list of integer don't care terms
-    :return: list of essential prime implicants (as binary strings)
+    :return: list of essential prime implicants (Term objects)
     """
     # Error checking
     if max(m_terms, default=0) > 2 ** n_bits or max(x_terms, default=0) > 2 ** n_bits:
@@ -172,6 +187,7 @@ def minimize(n_bits, m_terms, x_terms):
     pairs = get_pairs(terms)
     reduced_pairs.append(reduce_pairs(pairs))
 
+    # Loop while more pairs can be combined
     while reduced_pairs[-1]:
         pairs = get_pairs(reduced_pairs[-1])
         reduced_pairs.append(reduce_pairs(pairs))
@@ -180,34 +196,32 @@ def minimize(n_bits, m_terms, x_terms):
 
     prime_implicants = []
 
+    # Find prime implicants
     for item in reduced_pairs:
         for term in item:
             if not term.covered and term not in dcterms:
                 prime_implicants.append(term)
 
-    result = []
     essential_terms = terms_covered_once(prime_implicants, m_terms)
+    essential_prime_implicants = []
 
+    # Function determines if list 1 and list 2 intersect
     intersect = lambda l1, l2: len([i for i in l1 if i in l2]) > 0
 
+    # Find essential prime implicants
     for prime_implicant in prime_implicants:
-        current_term = list(prime_implicant.get_covered_terms())
+        current_term = tuple(prime_implicant.get_covered_terms())
         if intersect(prime_implicant, essential_terms):
-            result.append(prime_implicant)
-            m_terms = [i for i in m_terms if i not in current_term]
+            essential_prime_implicants.append(prime_implicant)
+            _m_terms = [i for i in m_terms if i not in current_term]
 
-    # Doesn't always yield fully simplified function
-    # Ideas... Term method that takes argument m_terms (list of ints not Terms) that returns the number of terms covered
-    # by each prime implicant. Sort from greatest nums covered to least nums covered then loop until m_terms are gone.
+    # Find remaining implicants
+    while m_terms:
+        max_prime_implicant = get_term_max_coverage(prime_implicants, m_terms)
+        essential_prime_implicants.append(max_prime_implicant)
+        m_terms = [i for i in m_terms if i not in max_prime_implicant.get_covered_terms()]
 
-    while len(m_terms) > 0:
-        for prime_implicant in prime_implicants:
-            current_term = list(prime_implicant.get_covered_terms())
-            if intersect(current_term, m_terms):
-                result.append(prime_implicant)
-                m_terms = [i for i in m_terms if i not in current_term]
-
-    return result
+    return essential_prime_implicants
 
 
 if __name__ == '__main__':
@@ -218,5 +232,5 @@ if __name__ == '__main__':
     minimized = minimize(variables, mt, dc)
     formatted_minimized = format_minimized_expression(minimized)
 
-    print('\nPrime Implicants: {}'.format(minimized))
+    print('\nEssential Prime Implicants: {}'.format(minimized))
     print('Minimized Expression: {}'.format(formatted_minimized))
