@@ -77,7 +77,7 @@ def differ_by_one(nums):
         if difference > 1:
             return False
     if difference == 1:
-        num1.covered = num2.covered = True
+        num1.covered, num2.covered = True, True
         return True
 
 
@@ -188,17 +188,13 @@ def minimize(n_bits, m_terms, x_terms):
     result = []
     essential_terms = terms_covered_once(prime_implicants, m_terms)
 
-    # TODO Clean up code
-
     intersect = lambda l1, l2: len([i for i in l1 if i in l2]) > 0
 
     for prime_implicant in prime_implicants:
         current_term = list(prime_implicant.get_covered_terms())
-        for covered_terms in current_term:
-            if covered_terms in essential_terms:
-                result.append(prime_implicant)
-                m_terms = [i for i in m_terms if i not in current_term]
-                break
+        if intersect(prime_implicant, essential_terms):
+            result.append(prime_implicant)
+            m_terms = [i for i in m_terms if i not in current_term]
 
     # Doesnt always yield fully simplified expression
 
@@ -208,7 +204,6 @@ def minimize(n_bits, m_terms, x_terms):
             if intersect(current_term, m_terms):
                 result.append(prime_implicant)
                 m_terms = [i for i in m_terms if i not in current_term]
-                break
 
     return result
 
