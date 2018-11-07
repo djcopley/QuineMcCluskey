@@ -2,7 +2,5 @@
 A program that simplifies logic expressions using the Quine McCluskey method!
 
 ### Usage
-Run the minimize.py file and follow the prompts (don't care terms are optional). Alternatively import the minimize.py file into your project and call the minimize() function. Usage: minimize(n_bits, minterms, xterms). Returns list of prime implicants.
-
-### To Do
-* Implement Petrick's method to simplify logic to its most simple form.
+Run the minimize.py file and follow the prompts (don't care terms are optional). Alternatively import the minimize.py 
+file into your project and call the minimize() function. Usage: minimize(n_bits, minterms, xterms). Returns list of prime implicants.

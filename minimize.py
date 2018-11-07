@@ -8,7 +8,7 @@ __version__ = 'v0.4-beta'
 
 class Term:
     """
-    Term object
+    Term class is used to keep track of implicants
     """
 
     def __init__(self, bin_str):
@@ -47,7 +47,7 @@ class Term:
         :return: generator object of covered terms
         """
         base = 0
-        xindex = [index for index, item in enumerate(self.bin_str[::-1]) if item == '-']
+        x_index = [index for index, item in enumerate(self.bin_str[::-1]) if item == '-']
 
         for index, item in enumerate(self.bin_str[::-1]):
             if item == '1':
@@ -55,8 +55,8 @@ class Term:
 
         yield base
 
-        for i in range(len(xindex)):
-            for items in itertools.combinations(xindex, i + 1):
+        for i in range(len(x_index)):
+            for items in itertools.combinations(x_index, i + 1):
                 accumulator = 0
                 for index in items:
                     accumulator += 2 ** index
@@ -131,23 +131,51 @@ def format_minimized_expression(prime_implicants):
     return result
 
 
-def minimize(n_bits, minterms, xterms):
+def terms_covered_once(prime_implicants, m_terms):
+    """
+    :param prime_implicants: list of prime implicants
+    :param m_terms: list of minterms (as integers, not Term objects)
+    :return: terms that are only covered once by prime implicants
+    """
+    covered = []
+    for prime_implicant in prime_implicants:
+        for covered_term in prime_implicant.get_covered_terms():
+            covered.append(covered_term)
+    return [i for i in covered if covered.count(i) == 1 and i in m_terms]
+
+
+def get_term_max_coverage(prime_implicants, m_terms):
+    """
+    Function sorts prime implicants based on how many m_terms are covered
+
+    :param prime_implicants: list of prime implicants
+    :param m_terms: list of minterms (integers, not Term objects)
+    :return: remaining minterms
+    """
+
+    term_max_coverage = max(prime_implicants,
+              key=lambda prime_implicant: len([i for i in prime_implicant.get_covered_terms() if i in m_terms]))
+
+    return term_max_coverage
+
+
+def minimize(n_bits, m_terms, x_terms):
     """
     :param n_bits: number of bits in equation
-    :param minterms: list of integer minterms
-    :param xterms: list of integer don't care terms
-    :return: list of essential prime implicants (as binary strings)
+    :param m_terms: list of integer minterms
+    :param x_terms: list of integer don't care terms
+    :return: list of essential prime implicants (Term objects)
     """
     # Error checking
-    if max(minterms, default=0) > 2 ** n_bits or max(xterms, default=0) > 2 ** n_bits:
+    if max(m_terms, default=0) > 2 ** n_bits or max(x_terms, default=0) > 2 ** n_bits:
         raise ValueError("integer overflow")
 
     # Minimizing
-    minterms = [Term(format(i, '0{}b'.format(n_bits))) for i in minterms]
-    xterms = [Term(format(i, '0{}b'.format(n_bits))) for i in xterms]
-    terms = set(minterms + xterms)
+    minterms = [Term(format(i, '0{}b'.format(n_bits))) for i in m_terms]
+    dcterms = [Term(format(i, '0{}b'.format(n_bits))) for i in x_terms]
+    terms = set(minterms + dcterms)
 
-    # The structure:
+    # Step-by-step
     # 1. Get all combination pairs
     # 2. Filter out items that differ by more than one bit
     # 3. Go through each pair that differs by only one bit and create a new Term with covered bits dashed out
@@ -158,6 +186,7 @@ def minimize(n_bits, minterms, xterms):
     pairs = get_pairs(terms)
     reduced_pairs.append(reduce_pairs(pairs))
 
+    # Loop while more pairs can be combined
     while reduced_pairs[-1]:
         pairs = get_pairs(reduced_pairs[-1])
         reduced_pairs.append(reduce_pairs(pairs))
@@ -166,14 +195,32 @@ def minimize(n_bits, minterms, xterms):
 
     prime_implicants = []
 
+    # Find prime implicants
     for item in reduced_pairs:
         for term in item:
-            if not term.covered and term not in xterms:
+            if not term.covered and term not in dcterms:
                 prime_implicants.append(term)
 
-    # TODO: Implement Petrick's method to find full simplified equation
+    essential_terms = terms_covered_once(prime_implicants, m_terms)
+    essential_prime_implicants = []
 
-    return prime_implicants
+    # Function determines if list 1 and list 2 intersect
+    intersect = lambda l1, l2: len([i for i in l1 if i in l2]) > 0
+
+    # Find essential prime implicants
+    for prime_implicant in prime_implicants:
+        current_term = tuple(prime_implicant.get_covered_terms())
+        if intersect(prime_implicant, essential_terms):
+            essential_prime_implicants.append(prime_implicant)
+            _m_terms = [i for i in m_terms if i not in current_term]
+
+    # Find remaining implicants
+    while m_terms:
+        max_prime_implicant = get_term_max_coverage(prime_implicants, m_terms)
+        essential_prime_implicants.append(max_prime_implicant)
+        m_terms = [i for i in m_terms if i not in max_prime_implicant.get_covered_terms()]
+
+    return essential_prime_implicants
 
 
 if __name__ == '__main__':
@@ -184,5 +231,5 @@ if __name__ == '__main__':
     minimized = minimize(variables, mt, dc)
     formatted_minimized = format_minimized_expression(minimized)
 
-    print('\nPrime Implicants: {}'.format(minimized))
+    print('\nEssential Prime Implicants: {}'.format(minimized))
     print('Minimized Expression: {}'.format(formatted_minimized))
