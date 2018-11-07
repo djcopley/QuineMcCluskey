@@ -196,7 +196,9 @@ def minimize(n_bits, m_terms, x_terms):
             result.append(prime_implicant)
             m_terms = [i for i in m_terms if i not in current_term]
 
-    # Doesnt always yield fully simplified expression
+    # Doesn't always yield fully simplified function
+    # Ideas... Term method that takes argument m_terms (list of ints not Terms) that returns the number of terms covered
+    # by each prime implicant. Sort from greatest nums covered to least nums covered then loop until m_terms are gone.
 
     while len(m_terms) > 0:
         for prime_implicant in prime_implicants:
