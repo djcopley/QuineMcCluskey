@@ -4,7 +4,7 @@ Quine McCluskey digital logic simplification
 import itertools
 
 __author__ = 'Daniel Copley'
-__version__ = 'v1.0'
+__version__ = 'v1.1'
 
 class Term:
     """
@@ -204,15 +204,11 @@ def minimize(n_bits, m_terms, x_terms):
     essential_terms = terms_covered_once(prime_implicants, m_terms)
     essential_prime_implicants = []
 
-    # Function determines if list 1 and list 2 intersect
-    intersect = lambda l1, l2: len([i for i in l1 if i in l2]) > 0
-
     # Find essential prime implicants
     for prime_implicant in prime_implicants:
-        current_term = tuple(prime_implicant.get_covered_terms())
-        if intersect(prime_implicant, essential_terms):
+        if len([i for i in prime_implicant if i in essential_terms]) > 0:
             essential_prime_implicants.append(prime_implicant)
-            _m_terms = [i for i in m_terms if i not in current_term]
+            m_terms = [i for i in m_terms if i not in tuple(prime_implicant.get_covered_terms())]
 
     # Find remaining implicants
     while m_terms:
