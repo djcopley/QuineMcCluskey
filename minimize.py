@@ -68,7 +68,7 @@ def differ_by_one(nums):
     """
     Function returns true if the binary strings differ by only one bit, else false
     :param nums: tuple of binary strings
-    :return: true if it differs by only one bit, else false
+    :return: true num1 and num2 differ by only one bit, else false
     """
     num1, num2 = nums
     difference = 0
@@ -78,7 +78,7 @@ def differ_by_one(nums):
         if difference > 1:
             return False
     if difference == 1:
-        num1.covered, num2.covered = True, True
+        num1.covered = num2.covered = True
         return True
 
 
@@ -139,7 +139,7 @@ def format_minimized_expression(prime_implicants):
 
 def terms_covered_once(prime_implicants, m_terms):
     """
-    Function returns list of essential-prime-implicants. If any term in m_terms is covered by only one prime-implicant,
+    Function returns list of essential prime implicants. If any term in m_terms is covered by only one prime-implicant,
     that prime-implicant is considered to be essential.
     :param prime_implicants: list of prime implicants
     :param m_terms: list of minterms (as integers, not Term objects)
@@ -154,10 +154,10 @@ def terms_covered_once(prime_implicants, m_terms):
 
 def get_term_max_coverage(prime_implicants, m_terms):
     """
-    Function returns the prime-implicant that covers the most m_terms
+    Function returns the prime implicant that covers the most m_terms
     :param prime_implicants: list of prime-implicants
     :param m_terms: list of minterms (integers, not Term objects)
-    :return term_max_coverage: prime-implicant that covers the most m_terms
+    :return term_max_coverage: prime implicant that covers the most m_terms
     """
     term_max_coverage = max(prime_implicants, key=lambda prime_implicant: len(
         [i for i in prime_implicant.get_covered_terms() if i in m_terms]))
@@ -167,11 +167,11 @@ def get_term_max_coverage(prime_implicants, m_terms):
 
 def minimize(n_bits, m_terms, x_terms):
     """
-    Function minimizes a sum-of-minterms equation, and returns a list of essential-prime-implicants.
+    Function minimizes a sum-of-minterms equation, and returns a list of essential prime implicants and prime implicants
     :param n_bits: number of bits in equation
     :param m_terms: list of integer minterms
     :param x_terms: list of integer don't-care terms
-    :return: list of essential-prime-implicants (Term objects)
+    :return: list of essential prime implicants and prime implicants (Term objects)
     """
     # Error checking
     if max(m_terms, default=0) > 2 ** n_bits or max(x_terms, default=0) > 2 ** n_bits:
@@ -209,21 +209,21 @@ def minimize(n_bits, m_terms, x_terms):
                 prime_implicants.append(term)
 
     essential_terms = terms_covered_once(prime_implicants, m_terms)
-    essential_prime_implicants = []
+    solution = []
 
     # Find essential prime implicants
     for prime_implicant in prime_implicants:
         if len([i for i in prime_implicant if i in essential_terms]) > 0:
-            essential_prime_implicants.append(prime_implicant)
+            solution.append(prime_implicant)
             m_terms = [i for i in m_terms if i not in tuple(prime_implicant.get_covered_terms())]
 
-    # Find remaining implicants
+    # Find remaining prime implicants necessary to cover function
     while m_terms:
         max_prime_implicant = get_term_max_coverage(prime_implicants, m_terms)
-        essential_prime_implicants.append(max_prime_implicant)
+        solution.append(max_prime_implicant)
         m_terms = [i for i in m_terms if i not in max_prime_implicant.get_covered_terms()]
 
-    return essential_prime_implicants
+    return solution
 
 
 if __name__ == '__main__':
@@ -234,5 +234,5 @@ if __name__ == '__main__':
     minimized = minimize(variables, mt, dc)
     formatted_minimized = format_minimized_expression(minimized)
 
-    print('\nEssential Prime Implicants: {}'.format(minimized))
+    print('\nMinimized Implicants: {}'.format(minimized))
     print('Minimized Expression: {}'.format(formatted_minimized))
