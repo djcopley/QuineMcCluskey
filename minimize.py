@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """
 Quine McCluskey digital logic simplification
 """
@@ -43,8 +44,8 @@ class Term:
 
     def get_covered_terms(self):
         """
-        Method calculates terms covered by Term object
-        :return: generator object of covered terms
+        Method calculates and returns terms covered by Term object
+        :return: integer generator of covered terms
         """
         base = 0
         x_index = [index for index, item in enumerate(self.bin_str[::-1]) if item == '-']
@@ -65,6 +66,7 @@ class Term:
 
 def differ_by_one(nums):
     """
+
     :param nums: tuple of binary strings
     :return: true if it differs by only one bit, else false
     """
@@ -147,14 +149,12 @@ def terms_covered_once(prime_implicants, m_terms):
 def get_term_max_coverage(prime_implicants, m_terms):
     """
     Function sorts prime implicants based on how many m_terms are covered
-
     :param prime_implicants: list of prime implicants
     :param m_terms: list of minterms (integers, not Term objects)
     :return: remaining minterms
     """
-
-    term_max_coverage = max(prime_implicants,
-              key=lambda prime_implicant: len([i for i in prime_implicant.get_covered_terms() if i in m_terms]))
+    term_max_coverage = max(prime_implicants, key=lambda prime_implicant: len(
+        [i for i in prime_implicant.get_covered_terms() if i in m_terms]))
 
     return term_max_coverage
 
