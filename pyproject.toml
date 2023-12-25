@@ -3,7 +3,7 @@ requires = ["setuptools>=64.0", "setuptools_scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "quinemccluskey"
+name = "simpliqm"
 dynamic = ["version"]
 dependencies = []
 authors = [
@@ -29,12 +29,12 @@ classifiers = [
 ]
 
 [tool.setuptools]
-packages = ["quinemccluskey"]
+packages = ["simpliqm"]
 
 [tool.setuptools_scm]
 
 [project.scripts]
-qm = "quinemccluskey.cli:cli"
+qm = "simpliqm.cli:cli"
 
 [project.urls]
 Homepage = "https://github.com/djcopley/QuineMcCluskey"

@@ -1,5 +1,5 @@
 import unittest
-from quinemccluskey.minimize import *
+from simpliqm.minimize import *
 
 
 class TestMinimization(unittest.TestCase):

@@ -18,7 +18,7 @@ simplifying Boolean expressions efficiently.
 Now you can install the Quine–McCluskey Python library using `pip`. Just run the following command:
 
 ```bash
-pip install quinemccluskey
+pip install simpliqm
 ```
 
 ### Getting Started
@@ -47,7 +47,7 @@ Ensure you have Python version 3.6 or higher installed to use this library.
 #### From Python:
 
 ```python
-from quinemccluskey import minimize, format_minimized_expression
+from simpliqm import minimize, format_minimized_expression
 
 n_bits = 4
 minterms = [0, 1, 2, 4, 8, 10, 12, 15]
