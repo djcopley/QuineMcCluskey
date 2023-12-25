@@ -1,37 +1,79 @@
-# QuineMcCluskey [![Build Status](https://travis-ci.org/djcopley/QuineMcCluskey.svg?branch=master)](https://travis-ci.org/djcopley/QuineMcCluskey)
+# QuineMcCluskey
 
 ### Table of Contents
 **[Introduction](#introduction)**<br>
 **[Requirements](#requirements)**<br>
 **[Usage](#usage)**<br>
 **[Resources](#resources)**<br>
-**[Contributing](#contributing)**<br>
 **[License](#license)**<br>
 
-### Introduction
-The Quine–McCluskey algorithm (or the method of prime implicants) is a method used for minimization of Boolean functions 
-that was developed by Willard V. Quine and extended by Edward J. McCluskey. It is functionally identical to 
-Karnaugh mapping, but the tabular form makes it more efficient for use in computer algorithms, and it also gives a 
-deterministic way to check that the minimal form of a Boolean function has been reached. It is also referred to as 
-the tabulation method.
+### Quine–McCluskey Algorithm Python Library
+
+Welcome to the Quine–McCluskey Python library – a powerful tool for minimizing Boolean functions with ease!
+Developed by Willard V. Quine and extended by Edward J. McCluskey, this algorithm is your go-to method for
+simplifying Boolean expressions efficiently.
+
+### Installation
+
+Now you can install the Quine–McCluskey Python library using `pip`. Just run the following command:
+
+```bash
+pip install quinemccluskey
+```
+
+### Getting Started
+
+Once installed, you can leverage the library's public API directly from Python. Two essential functions are at
+your disposal:
+
+1. **`minimize`**: Minimize Boolean functions with the provided minterms and optional don't care terms.
+2. **`format_minimized_expression`**: Format the minimized expression for clearer representation.
+
+### Command Line Interface
+
+Additionally, the library provides a convenient command-line interface. After installation, you can use the
+'qm' entry point directly from the terminal:
+
+```bash
+qm
+```
 
 ### Requirements
-This program requires python version 3.4 or higher to run.
+
+Ensure you have Python version 3.6 or higher installed to use this library.
 
 ### Usage
-Run the minimize.py file and follow the prompts. Don't care terms are optional, leave blank if there are none. Alternatively import the minimize.py 
-file into your project and call the minimize() function. Usage: minimize(n_bits, minterms, xterms). Function returns list of 
-essential prime and prime implicants.
 
-![Minimization Gif](https://github.com/djcopley/QuineMcCluskey/blob/master/assets/minimization.gif?raw=true)
+#### From Python:
+
+```python
+from quinemccluskey import minimize, format_minimized_expression
+
+n_bits = 4
+minterms = [0, 1, 2, 4, 8, 10, 12, 15]
+xterms = [5, 6]
+
+minimized_result = minimize(n_bits, minterms, xterms)
+formatted_result = format_minimized_expression(minimized_result)
+
+print(f"Minimized Expression: {formatted_result}")
+```
+
+#### From the Terminal:
+
+```bash
+qm
+```
+
+Follow the prompts to input your Boolean function details.
+
+![Minimization Gif](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ2JheWlrcWpmdDNqMnNsdThuc2t1eGVxZ25qN2Z1bGJjdHppZnR6MSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/DFDib94LuHfto0PREA/giphy.gif)
 
 ### Resources
+
 * [Quine McCluskey Algorithm Wikipedia](https://en.wikipedia.org/wiki/Quine%E2%80%93McCluskey_algorithm)
 * [Boolean Algebra](https://en.wikipedia.org/wiki/Boolean_algebra)
 
-### Contributing
-If you would like more information, please check out the full set of guidelines [here](https://github.com/djcopley/QuineMcCluskey/blob/master/CONTRIBUTING.md).
-<br>Contribution is welcomed!
-
 ### License
-This project is licensed under the [GNU General Public License v3.0](https://github.com/djcopley/QuineMcCluskey/blob/master/LICENSE)
+
+This project is licensed under the [GNU General Public License v3.0](https://github.com/djcopley/QuineMcCluskey/blob/master/LICENSE).

@@ -1,5 +1,5 @@
 import unittest
-from minimize import *
+from quinemccluskey.minimize import *
 
 
 class TestMinimization(unittest.TestCase):
