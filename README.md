@@ -67,7 +67,7 @@ qm
 
 Follow the prompts to input your Boolean function details.
 
-![Minimization Gif](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ2JheWlrcWpmdDNqMnNsdThuc2t1eGVxZ25qN2Z1bGJjdHppZnR6MSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/DFDib94LuHfto0PREA/giphy.gif)
+![Minimization Gif](https://i.imgur.com/un1gcfI.gif)
 
 ### Resources
 
